@@ -20,7 +20,7 @@ module.exports = [
     user_id: 1,
   },
   {
-    todo: 'take out recycling',
+    todo: 'take out trash/recycling',
     completed: false,
     user_id: 1,
   }

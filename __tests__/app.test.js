@@ -28,49 +28,176 @@ describe('app routes', () => {
       return client.end(done);
     });
 
-    // test('returns a new todo item when creating new todo item', async(done) => {
-
-    //   const data = await fakeRequest(app)
-    //     .post('/api/todos')
-    //     .send(newTodo)
-    //     .set('Authorization', token)
-    //     .expect('Content-Type', /json/)
-    //     .expect(200);
-  
-    //   expect(data.body).toEqual(newTodo);
-  
-    //   done();
-    // });
-
-    test('returns animals', async() => {
+    test('returns a new todo item when creating new todo item', async() => {
 
       const expectation = [
         {
-          'id': 1,
-          'name': 'bessie',
-          'cool_factor': 3,
-          'owner_id': 1
+          id: 6,
+          todo: 'vacuum',
+          completed: false,
+          user_id: 2,
         },
         {
-          'id': 2,
-          'name': 'jumpy',
-          'cool_factor': 4,
-          'owner_id': 1
+          id: 7,
+          todo: 'change Meli substrate',
+          completed: false,
+          user_id: 2,
         },
         {
-          'id': 3,
-          'name': 'spot',
-          'cool_factor': 10,
-          'owner_id': 1
+          id: 8,
+          todo: 'fold clothes',
+          completed: false,
+          user_id: 2,
         }
       ];
-
+      
+      for (let todo of expectation) {
+        await fakeRequest(app)
+          .post('/api/todos')
+          .send(todo)
+          .set('Authorization', token)
+          .expect('Content-Type', /json/)
+          .expect(200);
+      }
       const data = await fakeRequest(app)
-        .get('/animals')
+        .get('/api/todos')
+        .set('Authorization', token)
         .expect('Content-Type', /json/)
         .expect(200);
 
       expect(data.body).toEqual(expectation);
+    });
+
+    test('/GET todos', async() => {
+
+      const expectation = [
+        {
+          id: 6,
+          todo: 'vacuum',
+          completed: false,
+          user_id: 2,
+        },
+        {
+          id: 7,
+          todo: 'change Meli substrate',
+          completed: false,
+          user_id: 2,
+        },
+        {
+          id: 8,
+          todo: 'fold clothes',
+          completed: false,
+          user_id: 2,
+        }
+      ];
+
+      const data = await fakeRequest(app)
+        .get('/api/todos')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(data.body).toEqual(expectation);
+    });
+
+    test('/POST todos creates a new todo item', async() => {
+      const data = await fakeRequest(app)
+        .post('/api/todos')
+        .set('Authorization', token)
+        .send({
+          id: 9,
+          todo: 'clean litter box',
+          completed: false,
+          user_id: 2,
+        })
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      const dataTodo = await fakeRequest(app)
+        .get('/api/todos')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      const newTodo = [{
+        id: 9,
+        todo: 'clean litter box',
+        completed: false,
+        user_id: 2,
+      }];
+
+      const postedTodo = [
+        { 
+          'completed': false, 
+          'id': 6, 
+          'todo': 'vacuum', 
+          'user_id': 2 
+        }, 
+        { 'completed': false, 
+          'id': 7, 
+          'todo': 'change Meli substrate', 
+          'user_id': 2 
+        }, 
+        { 
+          'completed': false, 
+          'id': 8, 
+          'todo': 'fold clothes', 
+          'user_id': 2 
+        }, 
+        { 
+          'completed': false, 
+          'id': 9, 
+          'todo': 'clean litter box', 
+          'user_id': 2 
+        }
+      ];
+
+      expect(data.body).toEqual(newTodo);
+      expect(dataTodo.body).toEqual(postedTodo);
+    });
+
+    test('/PUT new todo', async() => {
+
+      const expectation = [
+        { 
+          'completed': false, 
+          'id': 6, 
+          'todo': 'vacuum', 
+          'user_id': 2 
+        }, 
+        { 'completed': false, 
+          'id': 7, 
+          'todo': 'change Meli substrate', 
+          'user_id': 2 
+        }, 
+        { 
+          'completed': false, 
+          'id': 8, 
+          'todo': 'fold clothes', 
+          'user_id': 2 
+        }, 
+        { 
+          'completed': true, 
+          'id': 9, 
+          'todo': 'clean litter box', 
+          'user_id': 2 
+        }
+      ];
+
+      await fakeRequest(app)
+        .put('/api/todos/9')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      const dataTodo = await fakeRequest(app)
+        .get('/api/todos')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(dataTodo.body).toEqual(expectation);
+
     });
   });
 });

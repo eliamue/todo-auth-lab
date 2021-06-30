@@ -28,6 +28,20 @@ describe('app routes', () => {
       return client.end(done);
     });
 
+    // test('returns a new todo item when creating new todo item', async(done) => {
+
+    //   const data = await fakeRequest(app)
+    //     .post('/api/todos')
+    //     .send(newTodo)
+    //     .set('Authorization', token)
+    //     .expect('Content-Type', /json/)
+    //     .expect(200);
+  
+    //   expect(data.body).toEqual(newTodo);
+  
+    //   done();
+    // });
+
     test('returns animals', async() => {
 
       const expectation = [
